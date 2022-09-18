@@ -13,4 +13,10 @@ router.get("/order_products", IndexController.listOrderProducts);
 router.post("/order", IndexController.insertOrder);
 router.post("/order_products", IndexController.insertOrderProducts);
 
+router.post("/login", IndexController.login);
+
+router.get("/products", IndexController.listProducts);
+
+router.get("/categories", IndexController.listCategories);
+
 export default router;

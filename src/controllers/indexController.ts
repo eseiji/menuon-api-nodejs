@@ -4,6 +4,8 @@ import { Company } from "../models/Companies";
 import { Order } from "../models/Orders";
 import { OrderProducts } from "../models/OrderProducts";
 import { Product } from "../models/Products";
+import { User } from "../models/Users";
+import { Category } from "../models/Categories";
 import { debuglog } from "util";
 
 export const main = (req: Request, res: Response) => {
@@ -135,6 +137,76 @@ export const insertOrderProducts = async (req: Request, res: Response) => {
     });
   } catch (error) {
     debuglog(JSON.stringify(error));
+    res.status(204);
+    res.json({ error: error });
+  }
+};
+
+export const listProducts = async (req: Request, res: Response) => {
+  try {
+    let { id_company } = req.body;
+
+    const products = await Product.findAll({
+      where: { id_company, deletion_date: null },
+    });
+
+    if (products) {
+      res.status(200);
+      res.json({
+        msg: "Products found.",
+        products,
+      });
+    } else {
+      throw new Error();
+    }
+  } catch (error) {
+    res.status(204);
+    res.json({ error: error });
+  }
+};
+
+export const listCategories = async (req: Request, res: Response) => {
+  try {
+    let { id_company } = req.body;
+
+    const categories = await Category.findAll({
+      where: { id_company, deletion_date: null },
+    });
+
+    if (categories) {
+      res.status(200);
+      res.json({
+        msg: "Categories found.",
+        categories,
+      });
+    } else {
+      throw new Error();
+    }
+  } catch (error) {
+    res.status(204);
+    res.json({ error: error });
+  }
+};
+
+// USERS
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    let { email, password } = req.body;
+
+    let user = await User.findOne({ where: { email, password } });
+    if (user) {
+      res.status(200);
+      res.json({
+        msg: "User found.",
+        id_user: user?.id_user,
+        name: user?.name,
+        email: user?.email,
+      });
+    } else {
+      throw new Error();
+    }
+  } catch (error) {
     res.status(204);
     res.json({ error: error });
   }
