@@ -167,7 +167,7 @@ export const listProducts = async (req: Request, res: Response) => {
 
 export const listCategories = async (req: Request, res: Response) => {
   try {
-    let { id_company } = req.body;
+    let { id_company } = req.params;
 
     const categories = await Category.findAll({
       where: { id_company, deletion_date: null },

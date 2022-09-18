@@ -17,6 +17,6 @@ router.post("/login", IndexController.login);
 
 router.get("/products", IndexController.listProducts);
 
-router.get("/categories", IndexController.listCategories);
+router.get("/categories/:id_company", IndexController.listCategories);
 
 export default router;
