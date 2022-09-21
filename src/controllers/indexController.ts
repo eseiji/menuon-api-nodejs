@@ -67,15 +67,17 @@ interface OrderProps {
 
 export const listOrders = async (req: Request, res: Response) => {
   try {
-    // let orders = await Order.findAll({
-    //   where: { deletion_date: null },
-    // });
-
-    Order.hasMany(OrderProducts, { foreignKey: "id_order" });
-    OrderProducts.belongsTo(Order, { foreignKey: "id_order" });
+    Order.belongsToMany(Product, {
+      through: "OrderProducts",
+      foreignKey: "id_order",
+    });
+    Product.belongsToMany(Order, {
+      through: "OrderProducts",
+      foreignKey: "id_product",
+    });
 
     let orders = await Order.findAll({
-      include: [{ model: OrderProducts, as: "Products" }],
+      include: [{ model: Product, required: true }],
       where: { deletion_date: null },
     });
     res.json(orders);
