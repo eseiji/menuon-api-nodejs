@@ -58,9 +58,24 @@ export const insertCompany = async (req: Request, res: Response) => {
 
 // PRODUCT - ORDERS
 
+interface OrderProps {
+  id_order: string;
+  total: string;
+  order_status: string;
+  products: unknown[];
+}
+
 export const listOrders = async (req: Request, res: Response) => {
   try {
+    // let orders = await Order.findAll({
+    //   where: { deletion_date: null },
+    // });
+
+    Order.hasMany(OrderProducts, { foreignKey: "id_order" });
+    OrderProducts.belongsTo(Order, { foreignKey: "id_order" });
+
     let orders = await Order.findAll({
+      include: [{ model: OrderProducts, as: "Products" }],
       where: { deletion_date: null },
     });
     res.json(orders);
