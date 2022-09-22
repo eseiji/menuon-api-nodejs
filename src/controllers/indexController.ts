@@ -161,10 +161,10 @@ export const insertOrderProducts = async (req: Request, res: Response) => {
 
 export const listProducts = async (req: Request, res: Response) => {
   try {
-    let { id_company } = req.params;
+    let { id_company, id_category } = req.params;
 
     const products = await Product.findAll({
-      where: { id_company, deletion_date: null },
+      where: { id_company, id_category, deletion_date: null },
     });
 
     if (products) {
