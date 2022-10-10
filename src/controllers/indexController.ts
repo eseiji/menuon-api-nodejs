@@ -182,6 +182,26 @@ export const listProducts = async (req: Request, res: Response) => {
   }
 };
 
+export const listProduct = async (req: Request, res: Response) => {
+  try {
+    let { id_product } = req.params;
+
+    const product = await Product.findOne({
+      where: { id_product, deletion_date: null },
+    });
+
+    if (product) {
+      res.status(200);
+      res.json(product);
+    } else {
+      throw new Error();
+    }
+  } catch (error) {
+    res.status(204);
+    res.json({ error: error });
+  }
+};
+
 export const listCategories = async (req: Request, res: Response) => {
   try {
     let { id_company } = req.params;

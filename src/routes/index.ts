@@ -16,6 +16,7 @@ router.post("/order_products", IndexController.insertOrderProducts);
 router.post("/login", IndexController.login);
 
 router.get("/products/:id_company/:id_category", IndexController.listProducts);
+router.get("/product/:id_product", IndexController.listProduct);
 
 router.get("/categories/:id_company", IndexController.listCategories);
 
