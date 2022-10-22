@@ -7,6 +7,7 @@ import { Product } from "../models/Products";
 import { User } from "../models/Users";
 import { Category } from "../models/Categories";
 import { debuglog } from "util";
+import { QueryTypes } from "sequelize";
 
 export const main = (req: Request, res: Response) => {
   res.json({ msg: "Server is running and API is available." });
@@ -67,19 +68,48 @@ interface OrderProps {
 
 export const listOrders = async (req: Request, res: Response) => {
   try {
-    Order.belongsToMany(Product, {
-      through: "OrderProducts",
-      foreignKey: "id_order",
-    });
-    Product.belongsToMany(Order, {
-      through: "OrderProducts",
-      foreignKey: "id_product",
-    });
+    // Order.belongsToMany(Product, {
+    //   through: "OrderProducts",
+    //   foreignKey: "id_order",
+    // });
+    // Product.belongsToMany(Order, {
+    //   through: "OrderProducts",
+    //   foreignKey: "id_product",
+    // });
 
-    let orders = await Order.findAll({
-      include: [{ model: Product, required: true }],
-      where: { deletion_date: null },
-    });
+    // // Order.belongsTo(User, {
+    // //   foreignKey: "id_customer",
+    // // });
+    // // User.hasMany(Order, {
+    // //   foreignKey: "id_user",
+    // // });
+
+    // let orders = await Order.findAll({
+    //   include: [
+    //     { model: Product, required: true },
+    //     { model: User, required: true },
+    //   ],
+    //   where: { deletion_date: null },
+    // });
+    const [orders, metadata] = await sequelize.query(
+      `SELECT orders.id_order, users.name, users.cpf, products.id_product as "products.id_product", products.name as "products.name", products.preparation_time as "products.preparation_time", order_products.quantity_sold as "products.quantity_sold"
+      FROM orders INNER JOIN (order_products INNER JOIN products ON (products.id_product = order_products.id_product)) ON (orders.id_order = order_products.id_order)
+      JOIN users ON (orders.id_customer = users.id_user)
+      WHERE orders.deletion_date IS NULL
+      AND users.deletion_date IS NULL AND order_products.status = 0`,
+      { plain: false, nest: true, type: QueryTypes.SELECT }
+    );
+
+    // orders.forEach(async (order: { id_order: number }) => {
+    //   const [products] = await sequelize.query(
+    //     "SELECT op.quantity_sold, p.name, p.preparation_time, op.status FROM order_products op JOIN products p ON p.id_product = op.id_product WHERE op.status = 0 AND op.id_order = ?",
+    //     {
+    //       replacements: [order.id_order],
+    //       type: QueryTypes.SELECT,
+    //     }
+    //   );
+    // });
+
     res.json(orders);
   } catch (error) {
     res.status(204);
