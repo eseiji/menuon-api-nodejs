@@ -68,37 +68,52 @@ interface OrderProps {
 
 export const listOrders = async (req: Request, res: Response) => {
   try {
-    // Order.belongsToMany(Product, {
-    //   through: "OrderProducts",
-    //   foreignKey: "id_order",
-    // });
-    // Product.belongsToMany(Order, {
-    //   through: "OrderProducts",
-    //   foreignKey: "id_product",
-    // });
+    Order.belongsToMany(Product, {
+      through: { model: OrderProducts },
+      foreignKey: "id_order",
+    });
+    Product.belongsToMany(Order, {
+      through: { model: OrderProducts },
+      foreignKey: "id_product",
+    });
 
-    // // Order.belongsTo(User, {
-    // //   foreignKey: "id_customer",
-    // // });
-    // // User.hasMany(Order, {
-    // //   foreignKey: "id_user",
-    // // });
+    Order.belongsTo(User, { foreignKey: "id_customer" });
 
-    // let orders = await Order.findAll({
-    //   include: [
-    //     { model: Product, required: true },
-    //     { model: User, required: true },
-    //   ],
-    //   where: { deletion_date: null },
-    // });
-    const [orders, metadata] = await sequelize.query(
-      `SELECT orders.id_order, users.name, users.cpf, products.id_product as "products.id_product", products.name as "products.name", products.preparation_time as "products.preparation_time", order_products.quantity_sold as "products.quantity_sold"
-      FROM orders INNER JOIN (order_products INNER JOIN products ON (products.id_product = order_products.id_product)) ON (orders.id_order = order_products.id_order)
-      JOIN users ON (orders.id_customer = users.id_user)
-      WHERE orders.deletion_date IS NULL
-      AND users.deletion_date IS NULL AND order_products.status = 0`,
-      { plain: false, nest: true, type: QueryTypes.SELECT }
-    );
+    let orders = await Order.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ["id_user", "name", "cpf", "email"],
+          required: true,
+        },
+        {
+          model: Product,
+          required: true,
+          attributes: ["id_product", "name", "preparation_time"],
+          through: { attributes: ["quantity_sold"] },
+        },
+      ],
+      where: { deletion_date: null },
+    });
+    // const [orders, metadata] = await sequelize.query(
+    //   "SELECT `User`.`id`,`User`.`firstName`,`Invoices`.`id` AS `Invoices.id`,`Invoices`.`total` AS `Invoices.total`,`Invoices`.`UserId` AS `Invoices.UserId`,`Invoices`.`CityId` AS `Invoices.CityId`,`Invoices->City`.`id` AS `Invoices.City.id`,`Invoices->City`.`cityName` AS `Invoices.City.cityName` FROM `Users` AS `User` LEFT OUTER JOIN `Invoices` AS `Invoices` ON `User`.`id` = `Invoices`.`UserId` LEFT OUTER JOIN `Cities` AS `Invoices->City` ON `Invoices`.`CityId` = Invoices->City`.`id` WHERE `User`.`id` = 1;",
+    //   { nest: true, type: QueryTypes.SELECT }
+    // );
+    // const [orders, metadata] = await sequelize.query(
+    //   `SELECT orders.id_order, users.name, users.cpf, products.id_product as ["products.id_product"], products.name as "products.name", products.preparation_time as "products.preparation_time", order_products.quantity_sold as "products.quantity_sold"
+    //   FROM
+
+    //   ((orders INNER JOIN order_products ON orders.id_order = order_products.id_order)
+    //   INNER JOIN products ON products.id_product = order_products.id_product)
+    //   JOIN users ON (orders.id_customer = users.id_user)
+
+    //   WHERE orders.deletion_date IS NULL
+    //   AND users.deletion_date IS NULL AND order_products.status = 0`,
+    //   {
+    //     nest: true,
+    //     type: QueryTypes.SELECT,
+    //   }
+    // );
 
     // orders.forEach(async (order: { id_order: number }) => {
     //   const [products] = await sequelize.query(
@@ -109,7 +124,10 @@ export const listOrders = async (req: Request, res: Response) => {
     //     }
     //   );
     // });
-
+    // const orders = await sequelize.query(
+    //   'SELECT "Orders"."id_order", "Orders"."total", "Orders"."status", "Orders"."insertion_date", "Orders"."deletion_date", "Orders"."id_table", "Orders"."id_customer", "User"."id_user" AS "User.id_user", "User"."name" AS "User.name", "User"."cpf" AS "User.cpf", "User"."email" AS "User.email", "Products"."id_product" AS "Products.id_product", "Products"."name" AS "Products.name", "Products"."preparation_time" AS "Products.preparation_time", "Products->OrderProducts"."id_order_products" AS "Products.OrderProducts.id_order_products", "Products->OrderProducts"."quantity_sold" AS "Products.OrderProducts.quantity_sold" FROM "orders" AS "Orders" INNER JOIN "users" AS "User" ON "Orders"."id_customer" = "User"."id_user" INNER JOIN ( "order_products" AS "Products->OrderProducts" INNER JOIN "products" AS "Products" ON "Products"."id_product" = "Products->OrderProducts"."id_product") ON "Orders"."id_order" = "Products->OrderProducts"."id_order" WHERE "Orders"."deletion_date" IS NULL;',
+    //   { nest: true, plain: true }
+    // );
     res.json(orders);
   } catch (error) {
     res.status(204);
