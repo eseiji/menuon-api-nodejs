@@ -27,7 +27,7 @@ export const listCompany = async (req: Request, res: Response) => {
   try {
     let id_company = req.params.id_company;
     let company = await Company.findByPk(id_company);
-    res.status(201);
+    res.status(200);
     res.json(company);
   } catch (error) {
     res.status(204);
@@ -43,7 +43,7 @@ export const insertCompany = async (req: Request, res: Response) => {
 
     let newCompany = await Company.create({ name, cnpj, insertion_date });
 
-    res.status(201);
+    res.status(200);
     res.json({
       msg: "Company was successfully created.",
       id: newCompany.id_company,
@@ -125,9 +125,10 @@ export const listOrderProducts = async (req: Request, res: Response) => {
 
 export const insertOrder = async (req: Request, res: Response) => {
   try {
-    let { total, status, id_table, id_customer } = req.body;
+    let { total, status, id_table, id_customer, id_employee } = req.body;
     let date = new Date();
     let insertion_date = date.toLocaleDateString("pt-BR");
+    let insertion_time = date.toLocaleTimeString("pt-BR");
 
     let newOrder = await Order.create({
       total,
@@ -137,14 +138,14 @@ export const insertOrder = async (req: Request, res: Response) => {
       insertion_date,
     });
 
-    res.status(201);
+    res.status(200);
     res.json({
-      msg: "Order was successfully created.",
       id: newOrder.id_order,
       total: newOrder.total,
       status: newOrder.status,
       id_table: newOrder.id_table,
       id_customer: newOrder.id_customer,
+      id_employee: newOrder.id_employee,
       insertion_date: newOrder.insertion_date,
     });
   } catch (error) {
@@ -172,7 +173,7 @@ export const insertOrderProducts = async (req: Request, res: Response) => {
       status,
       insertion_date: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
     });
-    res.status(201);
+    res.status(200);
     res.json({
       msg: "OrderProducts was successfully created.",
     });

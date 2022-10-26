@@ -39,7 +39,7 @@ export const OrderProducts = sequelize.define<OrderProductsInstance>(
       type: DataTypes.STRING,
     },
     deletion_date: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
     },
   },
   {
