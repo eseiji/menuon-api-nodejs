@@ -129,7 +129,8 @@ export const insertOrder = async (req: Request, res: Response) => {
     let date = new Date();
     let local_date = date.toLocaleDateString("pt-BR");
     let local_time = date.toLocaleTimeString("pt-BR");
-    const insertion_date = `${local_date}T${local_time}`;
+    const insertion_date = "DATASDIASMDIASMOOD";
+    // const insertion_date = `${local_date}T${local_time}`;
     console.log(insertion_date);
 
     let newOrder = await Order.create({
