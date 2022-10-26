@@ -8,8 +8,8 @@ export interface OrderProductsInstance extends Model {
   quantity_sold: number;
   product_price: number;
   status: number;
-  insertion_date: Date;
-  deletion_date: Date;
+  insertion_date: string;
+  deletion_date: string;
 }
 
 export const OrderProducts = sequelize.define<OrderProductsInstance>(

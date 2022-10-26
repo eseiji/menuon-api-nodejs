@@ -5,8 +5,8 @@ export interface OrdersInstance extends Model {
   id_order: number;
   total: number;
   status: number;
-  insertion_date: Date;
-  deletion_date: Date;
+  insertion_date: string;
+  deletion_date: string;
   id_table: number;
   id_customer: number;
   id_employee: number;
