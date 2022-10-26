@@ -130,14 +130,17 @@ export const insertOrder = async (req: Request, res: Response) => {
     let local_date = date.toLocaleDateString("pt-BR");
     let local_time = date.toLocaleTimeString("pt-BR");
     const insertion_date = `${local_date}T${local_time}`;
+    console.log(insertion_date);
 
     let newOrder = await Order.create({
       total,
       status,
       id_table,
       id_customer,
+      id_employee,
       insertion_date,
     });
+    console.log(newOrder.insertion_date);
 
     res.status(200);
     res.json({
