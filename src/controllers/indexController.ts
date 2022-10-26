@@ -127,8 +127,9 @@ export const insertOrder = async (req: Request, res: Response) => {
   try {
     let { total, status, id_table, id_customer, id_employee } = req.body;
     let date = new Date();
-    let insertion_date = date.toLocaleDateString("pt-BR");
-    let insertion_time = date.toLocaleTimeString("pt-BR");
+    let local_date = date.toLocaleDateString("pt-BR");
+    let local_time = date.toLocaleTimeString("pt-BR");
+    const insertion_date = `${local_date}T${local_time}`;
 
     let newOrder = await Order.create({
       total,
@@ -159,11 +160,14 @@ export const insertOrderProducts = async (req: Request, res: Response) => {
     let { id_order, id_product, quantity_sold, product_price, status } =
       req.body;
     let date = new Date();
-    let insertion_date = date.toLocaleDateString("us");
-    let [day, month, year] = insertion_date.split("/");
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let seconds = date.getSeconds();
+    // let insertion_date = date.toLocaleDateString("pt-BR");
+    // let [day, month, year] = insertion_date.split("/");
+    // let hours = date.getHours();
+    // let minutes = date.getMinutes();
+    // let seconds = date.getSeconds();
+    let local_date = date.toLocaleDateString("pt-BR");
+    let local_time = date.toLocaleTimeString("pt-BR");
+    const insertion_date = `${local_date}T${local_time}`;
 
     await OrderProducts.create({
       id_order,
@@ -171,7 +175,7 @@ export const insertOrderProducts = async (req: Request, res: Response) => {
       quantity_sold,
       product_price,
       status,
-      insertion_date: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
+      insertion_date: insertion_date,
     });
     res.status(200);
     res.json({
