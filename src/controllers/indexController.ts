@@ -130,9 +130,23 @@ export const insertOrder = async (req: Request, res: Response) => {
   try {
     let { total, status, id_table, id_customer, id_employee } = req.body;
     let date = new Date();
+    // let local_date = date.toLocaleDateString("pt-BR");
+    // local_date.replace("/", "-");
+    // let local_time = date.toLocaleTimeString("pt-BR");
+    // let insertion_date = `${local_date}T${local_time}` as String;
+
     let local_date = date.toLocaleDateString("pt-BR");
-    let local_time = date.toLocaleTimeString("pt-BR");
-    let insertion_date = `${local_date}T${local_time}` as String;
+    let [day, month, year] = local_date.split("/");
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+
+    let insertion_date = `${day.padStart(2, "0")}/${month.padStart(
+      2,
+      "0"
+    )}/${year.padStart(2, "0")}T${String(hours).padStart(2, "0")}:${String(
+      minutes
+    ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
     let newOrder = await Order.create({
       total,
