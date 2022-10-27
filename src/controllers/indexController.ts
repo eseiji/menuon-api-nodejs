@@ -71,14 +71,17 @@ export const listOrders = async (req: Request, res: Response) => {
     Order.belongsToMany(Product, {
       through: { model: OrderProducts },
       foreignKey: "id_order",
-      as: "products",
+      // as: {singular: "product", plural: "products"},
     });
     Product.belongsToMany(Order, {
       through: { model: OrderProducts },
       foreignKey: "id_product",
     });
 
-    Order.belongsTo(User, { foreignKey: "id_customer", as: "user" });
+    Order.belongsTo(User, {
+      foreignKey: "id_customer",
+      // as: {singular: "user", plural: "users"},
+    });
 
     let orders = await Order.findAll({
       include: [
@@ -86,12 +89,12 @@ export const listOrders = async (req: Request, res: Response) => {
           model: User,
           attributes: ["id_user", "name", "cpf", "email"],
           required: true,
-          as: "user",
+          // as: "user",
           where: { deletion_date: null },
         },
         {
           model: Product,
-          as: "products",
+          // as: "products",
           required: true,
           where: { deletion_date: null },
           attributes: ["id_product", "name", "preparation_time"],
