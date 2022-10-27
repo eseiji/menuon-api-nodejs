@@ -141,10 +141,10 @@ export const insertOrder = async (req: Request, res: Response) => {
     let minutes = date.getMinutes();
     let seconds = date.getSeconds();
 
-    let insertion_date = `${day.padStart(2, "0")}/${month.padStart(
+    let insertion_date = `${day.padStart(2, "0")}-${month.padStart(
       2,
       "0"
-    )}/${year.padStart(2, "0")}T${String(hours).padStart(2, "0")}:${String(
+    )}-${year.padStart(2, "0")}T${String(hours).padStart(2, "0")}:${String(
       minutes
     ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
