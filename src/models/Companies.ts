@@ -7,6 +7,8 @@ export interface CompaniesInstance extends Model {
   cnpj: string;
   insertion_date: Date;
   deletion_date: Date;
+  longitude: string;
+  latitude: string;
 }
 
 export const Company = sequelize.define<CompaniesInstance>(
@@ -28,6 +30,12 @@ export const Company = sequelize.define<CompaniesInstance>(
     },
     deletion_date: {
       type: DataTypes.DATE,
+    },
+    longitude: {
+      type: DataTypes.STRING,
+    },
+    latitude: {
+      type: DataTypes.STRING,
     },
   },
   {
