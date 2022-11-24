@@ -10,6 +10,10 @@ router.post("/company", IndexController.insertCompany);
 
 router.get("/orders", IndexController.listOrders);
 router.get("/order_products", IndexController.listOrderProducts);
+router.get(
+  "/order_history/:id_user/:id_company/:id_table",
+  IndexController.listOrderHistory
+);
 router.post("/order", IndexController.insertOrder);
 router.post("/order_products", IndexController.insertOrderProducts);
 

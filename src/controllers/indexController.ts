@@ -274,6 +274,37 @@ export const listCategories = async (req: Request, res: Response) => {
   }
 };
 
+export const listOrderHistory = async (req: Request, res: Response) => {
+  try {
+    let { id_user, id_company, id_table } = req.params;
+
+    const [order_history, metadata] = await sequelize.query(
+      'select o.id_order, o.total, o.status  from users u join orders o on u.id_user = o.id_customer join "tables" t on t.id_table = o.id_table join companies c on o.id_company = c.id_company where u.id_user = :id_user and t.id_table = :id_table and c.id_company = :id_company and o.deletion_date IS NULL and u.deletion_date IS NULL and c.deletion_date IS NULL',
+      {
+        replacements: { id_user, id_table, id_company },
+        // type: QueryTypes.SELECT,
+        // raw: true,
+        // plain: false,
+        // nest: true,
+      }
+    );
+
+    // const categories = await Category.findAll({
+    //   where: { id_company, deletion_date: null },
+    // });
+
+    if (order_history) {
+      res.status(200);
+      res.json(order_history);
+    } else {
+      throw new Error();
+    }
+  } catch (error) {
+    res.status(204);
+    res.json({ error: error });
+  }
+};
+
 // USERS
 
 export const login = async (req: Request, res: Response) => {
