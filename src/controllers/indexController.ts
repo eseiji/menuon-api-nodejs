@@ -311,15 +311,21 @@ export const login = async (req: Request, res: Response) => {
   try {
     let { email, password } = req.body;
 
-    let user = await User.findOne({ where: { email, password } });
+    const [user, metadata] = await sequelize.query(
+      'select * from users u join customers c on c.id_customer = u.id_user and u.deletion_date is null and u.email = :email and u."password" = :password',
+      {
+        replacements: { email, password },
+        // type: QueryTypes.SELECT,
+        // raw: true,
+        // plain: false,
+        // nest: true,
+      }
+    );
+
+    // let user = await User.findOne({ where: { email, password } });
     if (user) {
       res.status(200);
-      res.json({
-        msg: "User found.",
-        id_user: user?.id_user,
-        name: user?.name,
-        email: user?.email,
-      });
+      res.json(user);
     } else {
       throw new Error();
     }
