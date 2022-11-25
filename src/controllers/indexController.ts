@@ -279,7 +279,7 @@ export const listOrderHistory = async (req: Request, res: Response) => {
     let { id_user, id_company, id_table } = req.params;
 
     const [order_history, metadata] = await sequelize.query(
-      'select o.id_order, o.total, o.status  from users u join orders o on u.id_user = o.id_customer join "tables" t on t.id_table = o.id_table join companies c on o.id_company = c.id_company where u.id_user = :id_user and t.id_table = :id_table and c.id_company = :id_company and o.deletion_date IS NULL and u.deletion_date IS NULL and c.deletion_date IS NULL',
+      'select o.id_order, o.total, o.status  from users u join orders o on u.id_user = o.id_customer join "tables" t on t.id_table = o.id_table join companies c on o.id_company = c.id_company where u.id_user = :id_user and t.id_table = :id_table and c.id_company = :id_company and o.deletion_date IS NULL and u.deletion_date IS NULL and c.deletion_date IS NULL ORDER by o.insertion_date',
       {
         replacements: { id_user, id_table, id_company },
         // type: QueryTypes.SELECT,
