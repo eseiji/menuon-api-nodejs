@@ -97,7 +97,7 @@ export const listOrders = async (req: Request, res: Response) => {
           // as: "products",
           required: true,
           where: { deletion_date: null },
-          attributes: ["id_product", "name", "preparation_time"],
+          attributes: ["id_product", "name", "preparation_time", "priority"],
           through: {
             attributes: ["quantity_sold"],
             where: { status: 0 },

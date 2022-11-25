@@ -13,6 +13,7 @@ export interface ProductsInstance extends Model {
   id_company: number;
   preparation_time: string;
   image_url: string;
+  priority: number;
 }
 
 export const Product = sequelize.define<ProductsInstance>(
@@ -52,6 +53,9 @@ export const Product = sequelize.define<ProductsInstance>(
     },
     image_url: {
       type: DataTypes.STRING,
+    },
+    priority: {
+      type: DataTypes.INTEGER,
     },
   },
   {
