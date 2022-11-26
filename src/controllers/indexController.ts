@@ -182,15 +182,17 @@ export const insertOrderProducts = async (req: Request, res: Response) => {
   try {
     let { id_order, id_product, quantity_sold, product_price, status } =
       req.body;
-    let date = new Date();
+    let date = new Date().toLocaleString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+    });
     // let insertion_date = date.toLocaleDateString("pt-BR");
     // let [day, month, year] = insertion_date.split("/");
     // let hours = date.getHours();
     // let minutes = date.getMinutes();
     // let seconds = date.getSeconds();
-    let local_date = date.toLocaleDateString("pt-BR");
-    let local_time = date.toLocaleTimeString("pt-BR");
-    const insertion_date = `${local_date}T${local_time}`;
+    // let local_date = date.toLocaleDateString("pt-BR");
+    // let local_time = date.toLocaleTimeString("pt-BR");
+    // const insertion_date = `${local_date}T${local_time}`;
 
     await OrderProducts.create({
       id_order,
@@ -198,7 +200,7 @@ export const insertOrderProducts = async (req: Request, res: Response) => {
       quantity_sold,
       product_price,
       status,
-      insertion_date: insertion_date,
+      insertion_date: date,
     });
     res.status(200);
     res.json({
