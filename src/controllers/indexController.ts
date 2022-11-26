@@ -305,6 +305,23 @@ export const listOrderHistory = async (req: Request, res: Response) => {
   }
 };
 
+export const updateOrder = async (req: Request, res: Response) => {
+  try {
+    let { id_order, status } = req.body;
+    let date = new Date().toLocaleString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+    });
+
+    await Order.update({ status: status }, { where: { id_order: id_order } });
+
+    res.status(200);
+    res.json();
+  } catch (error) {
+    res.status(204);
+    res.json({ error: error });
+  }
+};
+
 // USERS
 
 export const login = async (req: Request, res: Response) => {
