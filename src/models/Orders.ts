@@ -10,6 +10,7 @@ export interface OrdersInstance extends Model {
   id_table: number;
   id_customer: number;
   id_employee: number;
+  id_company: number;
 }
 
 export const Order = sequelize.define<OrdersInstance>(
@@ -39,6 +40,9 @@ export const Order = sequelize.define<OrdersInstance>(
       type: DataTypes.INTEGER,
     },
     id_employee: {
+      type: DataTypes.INTEGER,
+    },
+    id_company: {
       type: DataTypes.INTEGER,
     },
   },
