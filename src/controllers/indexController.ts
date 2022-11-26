@@ -128,7 +128,8 @@ export const listOrderProducts = async (req: Request, res: Response) => {
 
 export const insertOrder = async (req: Request, res: Response) => {
   try {
-    let { total, status, id_table, id_customer, id_employee } = req.body;
+    let { total, status, id_table, id_customer, id_employee, id_company } =
+      req.body;
     let date = new Date().toLocaleString("pt-BR", {
       timeZone: "America/Sao_Paulo",
     });
@@ -157,6 +158,7 @@ export const insertOrder = async (req: Request, res: Response) => {
       id_customer,
       id_employee,
       insertion_date: date,
+      id_company: id_company,
     });
 
     res.status(200);
@@ -168,6 +170,7 @@ export const insertOrder = async (req: Request, res: Response) => {
       id_customer: newOrder.id_customer,
       id_employee: newOrder.id_employee,
       insertion_date: newOrder.insertion_date,
+      id_company: id_company,
     });
   } catch (error) {
     res.status(204);
