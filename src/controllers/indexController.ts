@@ -82,32 +82,60 @@ export const listOrders = async (req: Request, res: Response) => {
       foreignKey: "id_customer",
       // as: {singular: "user", plural: "users"},
     });
-
-    let orders = await Order.findAll({
-      include: [
-        {
-          model: User,
-          attributes: ["id_user", "name", "cpf", "email"],
-          required: true,
-          // as: "user",
-          where: { deletion_date: null },
-        },
-        {
-          model: Product,
-          // as: "products",
-          required: true,
-          where: { deletion_date: null },
-          attributes: ["id_product", "name", "preparation_time", "priority"],
-          through: {
-            attributes: ["quantity_sold"],
-            where: { status: 0 },
-            as: "sales",
+    const { id_order } = req.params;
+    if (id_order) {
+      let orders = await Order.findAll({
+        include: [
+          {
+            model: User,
+            attributes: ["id_user", "name", "cpf", "email"],
+            required: true,
+            // as: "user",
+            where: { deletion_date: null },
           },
-        },
-      ],
-      where: { deletion_date: null },
-    });
-    res.json(orders);
+          {
+            model: Product,
+            // as: "products",
+            required: true,
+            where: { deletion_date: null },
+            attributes: ["id_product", "name", "preparation_time", "priority"],
+            through: {
+              attributes: ["quantity_sold"],
+              where: { status: 0 },
+              as: "sales",
+            },
+          },
+        ],
+        where: { deletion_date: null, id_order: id_order },
+      });
+      res.json(orders[0]);
+    } else {
+      let orders = await Order.findAll({
+        include: [
+          {
+            model: User,
+            attributes: ["id_user", "name", "cpf", "email"],
+            required: true,
+            // as: "user",
+            where: { deletion_date: null },
+          },
+          {
+            model: Product,
+            // as: "products",
+            required: true,
+            where: { deletion_date: null },
+            attributes: ["id_product", "name", "preparation_time", "priority"],
+            through: {
+              attributes: ["quantity_sold"],
+              where: { status: 0 },
+              as: "sales",
+            },
+          },
+        ],
+        where: { deletion_date: null },
+      });
+      res.json(orders);
+    }
   } catch (error) {
     res.status(204);
     res.json({ error: error });

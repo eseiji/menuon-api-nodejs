@@ -8,7 +8,7 @@ router.get("/companies", IndexController.listCompanies);
 router.get("/company/:id_company", IndexController.listCompany);
 router.post("/company", IndexController.insertCompany);
 
-router.get("/orders", IndexController.listOrders);
+router.get("/orders/:id_order?", IndexController.listOrders);
 router.get("/order_products", IndexController.listOrderProducts);
 router.get(
   "/order_history/:id_user/:id_company/:id_table",
