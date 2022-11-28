@@ -8,6 +8,7 @@ import { User } from "../models/Users";
 import { Category } from "../models/Categories";
 import { debuglog } from "util";
 import { QueryTypes } from "sequelize";
+import { Payment } from "../models/Payment";
 
 export const main = (req: Request, res: Response) => {
   res.json({ msg: "Server is running and API is available." });
@@ -312,19 +313,11 @@ export const listOrderHistory = async (req: Request, res: Response) => {
     let { id_user, id_company, id_table } = req.params;
 
     const [order_history, metadata] = await sequelize.query(
-      'select o.id_order, o.total, o.status  from users u join orders o on u.id_user = o.id_customer join "tables" t on t.id_table = o.id_table join companies c on o.id_company = c.id_company where u.id_user = :id_user and t.id_table = :id_table and c.id_company = :id_company and o.deletion_date IS NULL and u.deletion_date IS NULL and c.deletion_date IS NULL ORDER by o.insertion_date DESC',
+      'select o.id_order, o.total, p.status, p.id_payment from users u join orders o on u.id_user = o.id_customer join "tables" t on t.id_table = o.id_table join companies c on o.id_company = c.id_company join payment p on p.id_order = o.id_order where u.id_user = :id_user and t.id_table = :id_table and c.id_company = :id_company and o.deletion_date IS NULL and u.deletion_date IS NULL and c.deletion_date IS NULL and p.deletion_date is NULL ORDER by o.insertion_date DESC',
       {
         replacements: { id_user, id_table, id_company },
-        // type: QueryTypes.SELECT,
-        // raw: true,
-        // plain: false,
-        // nest: true,
       }
     );
-
-    // const categories = await Category.findAll({
-    //   where: { id_company, deletion_date: null },
-    // });
 
     if (order_history) {
       res.status(200);
@@ -346,6 +339,59 @@ export const updateOrder = async (req: Request, res: Response) => {
     });
 
     await Order.update({ status: status }, { where: { id_order: id_order } });
+
+    res.status(200);
+    res.json();
+  } catch (error) {
+    res.status(204);
+    res.json({ error: error });
+  }
+};
+
+export const insertPayment = async (req: Request, res: Response) => {
+  try {
+    let { id_order, status } = req.body;
+    let date = new Date().toLocaleString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+    });
+
+    const payment = await Payment.create({
+      id_order: id_order,
+      status: status,
+      insertion_date: date,
+    });
+
+    res.status(200);
+    res.json(payment);
+  } catch (error) {
+    res.status(204);
+    res.json({ error: error });
+  }
+};
+
+export const updatePayment = async (req: Request, res: Response) => {
+  try {
+    let { id_payment, identification, status } = req.body;
+    let date = new Date().toLocaleString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+    });
+
+    if (identification && status) {
+      await Payment.update(
+        { identification: identification, status: status, update_date: date },
+        { where: { id_payment: id_payment } }
+      );
+    } else if (identification && !status) {
+      await Payment.update(
+        { identification: identification, update_date: date },
+        { where: { id_payment: id_payment } }
+      );
+    } else {
+      await Payment.update(
+        { status: status, update_date: date },
+        { where: { id_payment: id_payment } }
+      );
+    }
 
     res.status(200);
     res.json();

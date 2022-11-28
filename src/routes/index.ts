@@ -26,4 +26,7 @@ router.get("/product/:id_product", IndexController.listProduct);
 
 router.get("/categories/:id_company", IndexController.listCategories);
 
+router.post("/insert_payment", IndexController.insertPayment);
+router.post("/update_payment", IndexController.updatePayment);
+
 export default router;
