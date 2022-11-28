@@ -72,8 +72,8 @@ export const listOrders = async (req: Request, res: Response) => {
     Order.belongsToMany(Product, {
       through: { model: OrderProducts },
       foreignKey: "id_order",
-      // as: {singular: "product", plural: "products"},
     });
+
     Product.belongsToMany(Order, {
       through: { model: OrderProducts },
       foreignKey: "id_product",
@@ -81,22 +81,32 @@ export const listOrders = async (req: Request, res: Response) => {
 
     Order.belongsTo(User, {
       foreignKey: "id_customer",
-      // as: {singular: "user", plural: "users"},
     });
+
+    Order.hasOne(Payment, { foreignKey: "id_order" });
+    Payment.belongsTo(Order, {
+      foreignKey: "id_order",
+    });
+
     const { id_order } = req.params;
+
     if (id_order) {
       let orders = await Order.findAll({
         include: [
           {
+            model: Payment,
+            attributes: ["id_payment", "identification", "status"],
+            required: true,
+            where: { deletion_date: null },
+          },
+          {
             model: User,
             attributes: ["id_user", "name", "cpf", "email"],
             required: true,
-            // as: "user",
             where: { deletion_date: null },
           },
           {
             model: Product,
-            // as: "products",
             required: true,
             where: { deletion_date: null },
             attributes: ["id_product", "name", "preparation_time", "priority"],
@@ -109,10 +119,17 @@ export const listOrders = async (req: Request, res: Response) => {
         ],
         where: { deletion_date: null, id_order: id_order },
       });
+      res.status(200);
       res.json(orders[0]);
     } else {
       let orders = await Order.findAll({
         include: [
+          {
+            model: Payment,
+            attributes: ["id_payment", "identification", "status"],
+            required: true,
+            where: { deletion_date: null },
+          },
           {
             model: User,
             attributes: ["id_user", "name", "cpf", "email"],
@@ -135,6 +152,7 @@ export const listOrders = async (req: Request, res: Response) => {
         ],
         where: { deletion_date: null },
       });
+      res.status(200);
       res.json(orders);
     }
   } catch (error) {

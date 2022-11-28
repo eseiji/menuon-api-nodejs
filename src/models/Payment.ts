@@ -1,7 +1,7 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../instances/pg";
 
-export interface PaymentInstance extends Model {
+export interface PaymentsInstance extends Model {
   id_payment: number;
   id_order: number;
   identification: string;
@@ -11,8 +11,8 @@ export interface PaymentInstance extends Model {
   status: number;
 }
 
-export const Payment = sequelize.define<PaymentInstance>(
-  "Payment",
+export const Payment = sequelize.define<PaymentsInstance>(
+  "Payments",
   {
     id_payment: {
       primaryKey: true,
