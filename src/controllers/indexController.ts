@@ -95,7 +95,12 @@ export const listOrders = async (req: Request, res: Response) => {
         include: [
           {
             model: Payment,
-            attributes: ["id_payment", "identification", "status"],
+            attributes: [
+              "id_payment",
+              "identification",
+              "status",
+              "payment_date",
+            ],
             required: true,
             where: { deletion_date: null },
           },
@@ -389,27 +394,37 @@ export const insertPayment = async (req: Request, res: Response) => {
 
 export const updatePayment = async (req: Request, res: Response) => {
   try {
-    let { id_payment, identification, status } = req.body;
+    let { id_payment, identification, status, payment_date } = req.body;
     let date = new Date().toLocaleString("pt-BR", {
       timeZone: "America/Sao_Paulo",
     });
 
-    if (identification && status) {
-      await Payment.update(
-        { identification: identification, status: status, update_date: date },
-        { where: { id_payment: id_payment } }
-      );
-    } else if (identification && !status) {
-      await Payment.update(
-        { identification: identification, update_date: date },
-        { where: { id_payment: id_payment } }
-      );
-    } else {
-      await Payment.update(
-        { status: status, update_date: date },
-        { where: { id_payment: id_payment } }
-      );
+    console.log("id_payment");
+    console.log(id_payment);
+    console.log("payment_date");
+    console.log(payment_date);
+    console.log("status");
+    console.log(status);
+
+    let config = {};
+
+    if (identification) {
+      var identificationConfig = { identification: identification };
+      config = { ...identificationConfig };
     }
+    if (status) {
+      var statusConfig = { status: status };
+      config = { ...config, ...statusConfig };
+    }
+    if (payment_date) {
+      var paymentDateConfig = { payment_date: payment_date };
+      config = { ...config, ...paymentDateConfig };
+    }
+
+    console.log("config");
+    console.log(config);
+
+    await Payment.update(config, { where: { id_payment: id_payment } });
 
     res.status(200);
     res.json();

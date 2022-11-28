@@ -8,6 +8,7 @@ export interface PaymentsInstance extends Model {
   insertion_date: string;
   deletion_date: string;
   update_date: string;
+  payment_date: string;
   status: number;
 }
 
@@ -32,6 +33,9 @@ export const Payment = sequelize.define<PaymentsInstance>(
       type: DataTypes.STRING,
     },
     update_date: {
+      type: DataTypes.STRING,
+    },
+    payment_date: {
       type: DataTypes.STRING,
     },
     status: {
