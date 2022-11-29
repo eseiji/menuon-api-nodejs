@@ -182,9 +182,13 @@ export const insertOrder = async (req: Request, res: Response) => {
   try {
     let { total, status, id_table, id_customer, id_employee, id_company } =
       req.body;
-    let date = new Date().toLocaleString("pt-BR", {
+    let value = new Date().toLocaleString("pt-BR", {
       timeZone: "America/Sao_Paulo",
     });
+    var splittedDate = value.split(" ");
+    var date = splittedDate[0].split("/");
+    var hour = splittedDate[1].split(":");
+    const formattedDate = `${date[2]}-${date[1]}-${date[0]} ${hour[0]}:${hour[1]}:${hour[2]}`;
     // let local_date = date.toLocaleDateString("pt-BR");
     // local_date.replace("/", "-");
     // let local_time = date.toLocaleTimeString("pt-BR");
@@ -209,7 +213,7 @@ export const insertOrder = async (req: Request, res: Response) => {
       id_table,
       id_customer,
       id_employee,
-      insertion_date: date,
+      insertion_date: formattedDate,
       id_company: id_company,
     });
 
@@ -234,9 +238,13 @@ export const insertOrderProducts = async (req: Request, res: Response) => {
   try {
     let { id_order, id_product, quantity_sold, product_price, status } =
       req.body;
-    let date = new Date().toLocaleString("pt-BR", {
+    let value = new Date().toLocaleString("pt-BR", {
       timeZone: "America/Sao_Paulo",
     });
+    var splittedDate = value.split(" ");
+    var date = splittedDate[0].split("/");
+    var hour = splittedDate[1].split(":");
+    const formattedDate = `${date[2]}-${date[1]}-${date[0]} ${hour[0]}:${hour[1]}:${hour[2]}`;
     // let insertion_date = date.toLocaleDateString("pt-BR");
     // let [day, month, year] = insertion_date.split("/");
     // let hours = date.getHours();
@@ -252,7 +260,7 @@ export const insertOrderProducts = async (req: Request, res: Response) => {
       quantity_sold,
       product_price,
       status,
-      insertion_date: date,
+      insertion_date: formattedDate,
     });
     res.status(200);
     res.json({
@@ -357,9 +365,6 @@ export const listOrderHistory = async (req: Request, res: Response) => {
 export const updateOrder = async (req: Request, res: Response) => {
   try {
     let { id_order, status } = req.body;
-    let date = new Date().toLocaleString("pt-BR", {
-      timeZone: "America/Sao_Paulo",
-    });
 
     await Order.update({ status: status }, { where: { id_order: id_order } });
 
@@ -374,14 +379,18 @@ export const updateOrder = async (req: Request, res: Response) => {
 export const insertPayment = async (req: Request, res: Response) => {
   try {
     let { id_order, status } = req.body;
-    let date = new Date().toLocaleString("pt-BR", {
+    let value = new Date().toLocaleString("pt-BR", {
       timeZone: "America/Sao_Paulo",
     });
+    var splittedDate = value.split(" ");
+    var date = splittedDate[0].split("/");
+    var hour = splittedDate[1].split(":");
+    const formattedDate = `${date[2]}-${date[1]}-${date[0]} ${hour[0]}:${hour[1]}:${hour[2]}`;
 
     const payment = await Payment.create({
       id_order: id_order,
       status: status,
-      insertion_date: date,
+      insertion_date: formattedDate,
     });
 
     res.status(200);
@@ -395,22 +404,20 @@ export const insertPayment = async (req: Request, res: Response) => {
 export const updatePayment = async (req: Request, res: Response) => {
   try {
     let { id_payment, identification, status, payment_date } = req.body;
-    let date = new Date().toLocaleString("pt-BR", {
+
+    let value = new Date().toLocaleString("pt-BR", {
       timeZone: "America/Sao_Paulo",
     });
+    var splittedDate = value.split(" ");
+    var date = splittedDate[0].split("/");
+    var hour = splittedDate[1].split(":");
+    const formattedDate = `${date[2]}-${date[1]}-${date[0]} ${hour[0]}:${hour[1]}:${hour[2]}`;
 
-    console.log("id_payment");
-    console.log(id_payment);
-    console.log("payment_date");
-    console.log(payment_date);
-    console.log("status");
-    console.log(status);
-
-    let config = {};
+    let config = { update_Date: formattedDate };
 
     if (identification) {
       var identificationConfig = { identification: identification };
-      config = { ...identificationConfig };
+      config = { ...config, ...identificationConfig };
     }
     if (status) {
       var statusConfig = { status: status };
@@ -420,9 +427,6 @@ export const updatePayment = async (req: Request, res: Response) => {
       var paymentDateConfig = { payment_date: payment_date };
       config = { ...config, ...paymentDateConfig };
     }
-
-    console.log("config");
-    console.log(config);
 
     await Payment.update(config, { where: { id_payment: id_payment } });
 
