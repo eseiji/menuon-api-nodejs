@@ -413,7 +413,7 @@ export const updatePayment = async (req: Request, res: Response) => {
     var hour = splittedDate[1].split(":");
     const formattedDate = `${date[2]}-${date[1]}-${date[0]} ${hour[0]}:${hour[1]}:${hour[2]}`;
 
-    let config = { update_Date: formattedDate };
+    let config = { update_date: formattedDate };
 
     if (identification) {
       var identificationConfig = { identification: identification };
