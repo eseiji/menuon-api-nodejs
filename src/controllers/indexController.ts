@@ -322,6 +322,9 @@ export const listCategories = async (req: Request, res: Response) => {
 
     const categories = await Category.findAll({
       where: { id_company, deletion_date: null },
+      order: [
+        ['order', 'ASC']
+      ]
     });
 
     if (categories) {

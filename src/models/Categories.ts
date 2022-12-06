@@ -7,6 +7,7 @@ export interface CategoriesInstance extends Model {
   insertion_date: string;
   deletion_date: Date;
   id_company: number;
+  order: number;
 }
 
 export const Category = sequelize.define<CategoriesInstance>(
@@ -27,6 +28,9 @@ export const Category = sequelize.define<CategoriesInstance>(
       type: DataTypes.DATE,
     },
     id_company: {
+      type: DataTypes.INTEGER,
+    },
+  order: {
       type: DataTypes.INTEGER,
     },
   },
